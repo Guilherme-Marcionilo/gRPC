@@ -37,7 +37,7 @@ internal class CarrosControllerTest(
     }
 
     @Test
-    fun `NÃO deve adicionar novo carro quando já existir um carro com a mesma placa!`() {
+    fun `NAO deve adicionar novo carro quando já existir um carro com a mesma placa!`() {
         val existente = repository.save(Carro(modelo = "Fiat", placa = "12312"))
 
 
@@ -55,6 +55,24 @@ internal class CarrosControllerTest(
 
 
     }
+
+    @Test
+    fun `NAO deve adicionar novo carro quando dados de entrada forem inválidos!`() {
+        //Cenário já está acontecendo com a limpeza do banco antes
+
+        //Ação:
+        val erro = assertThrows<StatusRuntimeException> {
+            grpcClient.adicionar(
+                CarroRequest.newBuilder().build()
+            )
+        }
+
+        // Validação
+        assertEquals(Status.INVALID_ARGUMENT.code, erro.status.code)
+        assertEquals("OPS! Dados de entrada inválidos!", erro.status.description)
+    }
+
+
 
 
     @Factory
